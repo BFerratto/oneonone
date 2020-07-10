@@ -1,0 +1,11 @@
+{
+  "include": ["./src/**/*.ts"],
+  "compilerOptions": {
+    "strict": true,
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "outDir": "build/",
+    "esModuleInterop": true
+  }
+}
