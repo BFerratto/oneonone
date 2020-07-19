@@ -1,4 +1,5 @@
 import { getAccounts, saveAccount } from "../../services/account";
+import { gql } from "apollo-server-express";
 
 export const queries = {
   account: getAccounts,
@@ -11,17 +12,15 @@ export const mutations = {
   },
 };
 
-export const typeDefs = {
-  query: `
-      account: [Account]
-    `,
-  mutation: `
-        addAccount(email: String!): Account
-    `,
-  type: `
-    type Account {
-        id: ID!
-        email: String!
-    }
-    `,
-};
+export const typeDefs = gql`
+  type Account {
+    id: ID!
+    email: String!
+  }
+  extend type Query {
+    account: [Account]
+  }
+  extend type Mutation {
+    addAccount(email: String!): Account
+  }
+`;
