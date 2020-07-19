@@ -8,6 +8,6 @@ export async function getAccounts() {
 export async function saveAccount({ email }: { email: string }) {
   const createdAccount = new Account();
   createdAccount.email = email;
-  await createdAccount.save();
-  return createdAccount;
+  const savedAccount = await createdAccount.save();
+  return savedAccount;
 }
