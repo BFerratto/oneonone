@@ -7,6 +7,7 @@ import { typeDefs, resolvers } from "./graphql";
 import {
   getAccounts as mockGetAccounts,
   defaultAccounts,
+  newAccountId,
 } from "./services/__mocks__/account";
 import express from "express";
 import { Server } from "http";
@@ -18,6 +19,15 @@ const GET_ACCOUNTS = gql`
     account {
       email
       id
+    }
+  }
+`;
+
+const SAVE_ACCOUNT = gql`
+  mutation saeAccount($email: String!) {
+    addAccount(email: $email) {
+      id
+      email
     }
   }
 `;
@@ -45,6 +55,18 @@ describe("Apollo server", () => {
   });
   it("Query accounts", async () => {
     const res = await testClient.query({ query: GET_ACCOUNTS });
+    expect(res.errors).toBeFalsy();
+
     expect(res.data?.account).toEqual(defaultAccounts);
+  });
+  it("Mutates accounts", async () => {
+    const email = "mock@email.com";
+    const res = await testClient.mutate({
+      mutation: SAVE_ACCOUNT,
+      variables: { email },
+    });
+    expect(res.errors).toBeFalsy();
+    const expected = { email, id: newAccountId };
+    expect(res.data?.addAccount).toEqual(expected);
   });
 });

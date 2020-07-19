@@ -1,15 +1,11 @@
 import "reflect-metadata";
-import { getAccounts, saveAccount } from "../services/account";
+import * as account from "./account";
 
 export const resolvers = {
   Query: {
-    account() {
-      return getAccounts();
-    },
+    ...account.queries,
   },
   Mutation: {
-    addAccount(_: any, args: { email: string }) {
-      return saveAccount(args);
-    },
+    ...account.mutations,
   },
 };

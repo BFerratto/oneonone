@@ -1,14 +1,11 @@
 import { gql } from "apollo-server-express";
-
+import { typeDefs as account } from "./account";
 export const typeDefs = gql`
-  type Account {
-    id: ID!
-    email: String!
-  }
-  type Query {
-    account: [Account]
-  }
-  type Mutation {
-    addAccount(email: String!): Account
-  }
+    ${account.type}
+    type Query {
+        ${account.query}
+    }
+    type Mutation {
+        ${account.mutation}
+    }
 `;
