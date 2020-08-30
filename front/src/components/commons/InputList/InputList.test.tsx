@@ -19,7 +19,7 @@ describe("<InputList />", () => {
   it("add new", () => {
     const { getAllByTestId, getByTestId } = getSystemUnderTest();
     const button = screen.getByRole("button", { name: /add new/i });
-    const maininput = screen.getByLabelText("Add new");
+    const maininput = screen.getByLabelText("Add new") as HTMLInputElement;
     const mockNewValue = "mockNewValue";
     fireEvent.change(maininput, { target: { value: mockNewValue } });
     fireEvent.click(button);
@@ -27,6 +27,7 @@ describe("<InputList />", () => {
     expect(items.length).toBe(2);
     const addNewInputs = screen.getAllByLabelText("Add new");
     expect(addNewInputs.length).toBe(1);
+    expect(maininput.value).toBe("");
     const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
     expect(deleteButtons.length).toBe(1);
   });
@@ -77,12 +78,6 @@ describe("<InputList />", () => {
     expect(valueIsDeleted).toBe(true);
     const newTotalItems = getAllByTestId("InputItem").length;
     expect(newTotalItems).toBe(totalItems - 1);
-  });
-  it.skip("renders with all values", () => {
-    const allProps: Required<Props> = {
-      items: [],
-    };
-    getSystemUnderTest(allProps);
   });
 });
 

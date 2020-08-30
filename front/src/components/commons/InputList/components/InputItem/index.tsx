@@ -28,6 +28,7 @@ export const InputItem: FC<Props> = ({
     setValue(target.value);
     onChange?.(target.value);
   };
+  const clearValue = () => setValue("");
   return (
     <Container data-testid="InputItem">
       {label && <FormLabel htmlFor={id}>{label}</FormLabel>}
@@ -38,7 +39,7 @@ export const InputItem: FC<Props> = ({
         </Button>
       )}
       {!removable && (
-        <Button aria-label="add new" onClick={() => onNew?.(value)}>
+        <Button aria-label="add new" onClick={() => onNew?.(value, clearValue)}>
           +
         </Button>
       )}

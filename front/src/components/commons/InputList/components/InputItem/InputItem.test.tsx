@@ -34,7 +34,7 @@ describe("<InputItem />", () => {
     fireEvent.change(input, { target: { value: mockChangedValue } });
     expect(mockOnChange).toHaveBeenCalledWith(mockChangedValue);
   });
-  it("fires onNew", () => {
+  it("fires onNew and can clear", () => {
     const mockOnNew = jest.fn();
     const { input } = getSystemUnderTest({
       onNew: mockOnNew,
@@ -44,7 +44,11 @@ describe("<InputItem />", () => {
     fireEvent.change(input, { target: { value: mockChangedValue } });
     const button = screen.getByRole("button");
     fireEvent.click(button);
-    expect(mockOnNew).toHaveBeenCalledWith(mockChangedValue);
+    const [onNewArgs] = mockOnNew.mock.calls;
+    expect(onNewArgs[0]).toBe(mockChangedValue);
+    const clearValue = onNewArgs[1];
+    clearValue();
+    expect(input.value).toBe("");
   });
   it("renders with all values", () => {
     const mockOnChange = jest.fn();
@@ -68,7 +72,9 @@ describe("<InputItem />", () => {
 
     const button = screen.getByRole("button", { name: /add new/i });
     fireEvent.click(button);
-    expect(mockOnNew).toHaveBeenCalledWith(mockChangedValue);
+    const [onNewArgs] = mockOnNew.mock.calls;
+
+    expect(onNewArgs[0]).toBe(mockChangedValue);
   });
   it("Rerenders if value change", () => {
     const { input, rerender, InputItem, container } = getSystemUnderTest({

@@ -6,17 +6,18 @@ type Item = {
 export interface Props {
   items?: Item[];
 }
-export const InputList: FC<Props> = ({ items = [] }) => {
-  const [currentItems, setCurrentItems] = useState(items);
+export const InputList: FC<Props> = ({ items }) => {
+  const [currentItems, setCurrentItems] = useState([]);
   useEffect(() => {
-    setCurrentItems(items);
+    setCurrentItems(items || []);
   }, [items, setCurrentItems]);
 
-  const handleNew = (newValue) => {
+  const handleNew = (newValue, clearValue) => {
     if (!newValue) return;
     setCurrentItems((previousItems) =>
       previousItems.concat({ value: newValue })
     );
+    clearValue();
   };
   const handleDelete = (index: number) => {
     setCurrentItems((previousItems) => {
