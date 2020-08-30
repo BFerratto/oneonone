@@ -1,5 +1,5 @@
 import React from "react";
-import { screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent, act } from "@testing-library/react";
 import { Props } from ".";
 import {
   renderWithTheme,
@@ -47,7 +47,9 @@ describe("<InputItem />", () => {
     const [onNewArgs] = mockOnNew.mock.calls;
     expect(onNewArgs[0]).toBe(mockChangedValue);
     const clearValue = onNewArgs[1];
-    clearValue();
+    act(() => {
+      clearValue();
+    });
     expect(input.value).toBe("");
   });
   it("renders with all values", () => {

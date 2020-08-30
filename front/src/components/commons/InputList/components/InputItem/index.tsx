@@ -13,16 +13,16 @@ export interface Props {
 }
 export const InputItem: FC<Props> = ({
   label,
-  value: initialValue = "",
+  value: initialValue,
   onChange,
   onNew,
   removable,
   onDelete,
   id,
 }) => {
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState("");
   useEffect(() => {
-    setValue(initialValue);
+    setValue(initialValue || "");
   }, [initialValue, setValue]);
   const handleChange = ({ target }) => {
     setValue(target.value);

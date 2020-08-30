@@ -5,8 +5,9 @@ type Item = {
 };
 export interface Props {
   items?: Item[];
+  onChange?: Function;
 }
-export const InputList: FC<Props> = ({ items }) => {
+export const InputList: FC<Props> = ({ items, onChange }) => {
   const [currentItems, setCurrentItems] = useState([]);
   useEffect(() => {
     setCurrentItems(items || []);
@@ -14,15 +15,26 @@ export const InputList: FC<Props> = ({ items }) => {
 
   const handleNew = (newValue, clearValue) => {
     if (!newValue) return;
-    setCurrentItems((previousItems) =>
-      previousItems.concat({ value: newValue })
-    );
+    setCurrentItems((previousItems) => {
+      const newItems = previousItems.concat({ value: newValue });
+      onChange?.(newItems);
+      return newItems;
+    });
     clearValue();
   };
   const handleDelete = (index: number) => {
     setCurrentItems((previousItems) => {
       const newItems = previousItems.slice(0);
       newItems.splice(index, 1);
+      onChange?.(newItems);
+      return newItems;
+    });
+  };
+  const handleValueChange = (index: number, newValue: string) => {
+    setCurrentItems((previousItems) => {
+      const newItems = previousItems.slice(0);
+      newItems[index] = { value: newValue };
+      onChange?.(newItems);
       return newItems;
     });
   };
@@ -35,6 +47,7 @@ export const InputList: FC<Props> = ({ items }) => {
           value={value}
           removable
           onDelete={() => handleDelete(index)}
+          onChange={(newValue) => handleValueChange(index, newValue)}
         />
       ))}
       <InputItem label={"Add new"} id="newInputItem" onNew={handleNew} />

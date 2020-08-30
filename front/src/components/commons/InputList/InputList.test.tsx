@@ -10,14 +10,20 @@ describe("<InputList />", () => {
     screen.getByLabelText("Add new");
   });
   it("Can't add new if value is empty", () => {
-    const { getAllByTestId } = getSystemUnderTest();
+    const mockOnChange = jest.fn();
+    const { getAllByTestId } = getSystemUnderTest({ onChange: mockOnChange });
     const button = screen.getByRole("button", { name: /add new/i });
     fireEvent.click(button);
     const items = getAllByTestId("InputItem");
     expect(items.length).toBe(1);
+    expect(mockOnChange).not.toBeCalled();
   });
   it("add new", () => {
-    const { getAllByTestId, getByTestId } = getSystemUnderTest();
+    const mockOnChange = jest.fn();
+
+    const { getAllByTestId, getByTestId } = getSystemUnderTest({
+      onChange: mockOnChange,
+    });
     const button = screen.getByRole("button", { name: /add new/i });
     const maininput = screen.getByLabelText("Add new") as HTMLInputElement;
     const mockNewValue = "mockNewValue";
@@ -30,6 +36,7 @@ describe("<InputList />", () => {
     expect(maininput.value).toBe("");
     const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
     expect(deleteButtons.length).toBe(1);
+    expect(mockOnChange).toBeCalledWith([{ value: mockNewValue }]);
   });
   it("Start with initial values", () => {
     const { getAllByTestId } = getSystemUnderTest({ items: mockInitialValues });
@@ -52,16 +59,27 @@ describe("<InputList />", () => {
   });
 
   it("Can edit a previously added value", () => {
-    const { getAllByTestId } = getSystemUnderTest({ items: mockInitialValues });
+    const mockOnChange = jest.fn();
+
+    const { getAllByTestId } = getSystemUnderTest({
+      items: mockInitialValues,
+      onChange: mockOnChange,
+    });
     const items = getAllByTestId("InputItem");
     const targetInput = 1;
     const input = items[targetInput].querySelector("input");
     fireEvent.change(input, { target: { value: mockNewValue } });
     expect(input.value).toBe(mockNewValue);
+    const expectedChange = mockInitialValues.slice(0);
+    expectedChange[targetInput].value = mockNewValue;
+    expect(mockOnChange).toBeCalledWith(expectedChange);
   });
   it("Can remove", () => {
+    const mockOnChange = jest.fn();
+
     const { getAllByTestId, container } = getSystemUnderTest({
       items: mockInitialValues,
+      onChange: mockOnChange,
     });
     const items = getAllByTestId("InputItem");
     const totalItems = items.length;
@@ -78,6 +96,10 @@ describe("<InputList />", () => {
     expect(valueIsDeleted).toBe(true);
     const newTotalItems = getAllByTestId("InputItem").length;
     expect(newTotalItems).toBe(totalItems - 1);
+
+    const expectedChange = mockInitialValues.slice(0);
+    expectedChange.splice(targetInput, 1);
+    expect(mockOnChange).toBeCalledWith(expectedChange);
   });
 });
 
