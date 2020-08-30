@@ -1,3 +1,5 @@
+export {};
+
 /**
  * For me some reason manual mocks were not changeable
  *
