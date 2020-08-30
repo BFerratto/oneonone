@@ -9,6 +9,10 @@ describe("<<%= componentName%> />", () => {
   it("renders ", () => {
     getSystemUnderTest({});
   });
+    it("renders with all values", () => {
+    const allProps: Required<Props> = {};
+     getSystemUnderTest(allProps);
+  });
 });
 
 const defaultProps: Partial<Props> = {
