@@ -6,7 +6,7 @@ type AddBigGoalArgs = {
 };
 export const mutations = {
   async addBigGoals(root: any, args: AddBigGoalArgs) {
-    await saveBigGoals(args.goals);
+    return saveBigGoals(args.goals);
   },
 };
 
