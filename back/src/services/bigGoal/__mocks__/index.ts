@@ -8,8 +8,18 @@ export const defaultBigGoals = [
     title: "mock Goal 2",
   },
 ];
+export const createdBigGoals = [
+  {
+    id: "fakeId3",
+    title: "Saved Goal 1",
+  },
+  {
+    id: "fakeId4",
+    title: "Saved Goal 2",
+  },
+];
 export const newAccountId = "newAccountId";
 export const getBigGoals = jest.fn(() => Promise.resolve(defaultBigGoals));
 export const saveBigGoals = jest.fn((goals: string[]) =>
-  Promise.resolve(defaultBigGoals)
+  Promise.resolve(createdBigGoals)
 );

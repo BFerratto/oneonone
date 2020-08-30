@@ -1,15 +1,36 @@
 import express from "express";
 import { createTestClient as apolloCreateTestClient } from "apollo-server-testing";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, gql } from "apollo-server-express";
 
 type GetTestServerArgs = {
   typeDefs: any;
-  resolvers: any;
+  queries: any;
+  mutations: any;
 };
 export function getApolloTestServerStarter({
-  typeDefs,
-  resolvers,
+  typeDefs: partialDefs,
+  mutations,
+  queries,
 }: GetTestServerArgs) {
+  const typeDefs = gql`
+    type Query {
+      _empty: String
+    }
+    type Mutation {
+      _empty: String
+    }
+    ${partialDefs}
+  `;
+
+  const resolvers = {
+    Query: {
+      ...queries,
+    },
+    Mutation: {
+      ...mutations,
+    },
+  };
+
   async function startTestServer() {
     const app = express();
     const apolloServer: any = new ApolloServer({ typeDefs, resolvers });

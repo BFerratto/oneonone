@@ -1,6 +1,10 @@
 import { gql } from "apollo-server-express";
-import { saveBigGoals } from "../../services/bigGoal";
-export const queries = {};
+import { saveBigGoals, getBigGoals } from "../../services/bigGoal";
+export const queries = {
+  async bigGoals() {
+    return getBigGoals();
+  },
+};
 type AddBigGoalArgs = {
   goals: string[];
 };
