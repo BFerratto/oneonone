@@ -6,12 +6,16 @@ export interface Props {
   value?: string;
   onChange?: Function;
   onNew?: Function;
+  removable?: boolean;
+  onDelete?: Function;
 }
 export const InputItem: FC<Props> = ({
   label,
   value: initialValue,
   onChange,
   onNew,
+  removable,
+  onDelete,
 }) => {
   const [value, setValue] = useState(initialValue);
   const handleChange = ({ target }) => {
@@ -22,7 +26,8 @@ export const InputItem: FC<Props> = ({
     <>
       <FormLabel>{label}</FormLabel>
       <Input value={value} onChange={handleChange} />
-      <Button onClick={() => onNew?.(value)}>Button</Button>
+      {removable && <Button onClick={() => onDelete?.()}>Delete</Button>}
+      {!removable && <Button onClick={() => onNew?.(value)}>Add New</Button>}
     </>
   );
 };

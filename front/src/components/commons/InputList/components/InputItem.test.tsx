@@ -39,18 +39,21 @@ describe("<InputItem />", () => {
     });
     const mockChangedValue = "mockChangedValue";
     fireEvent.change(input, { target: { value: mockChangedValue } });
-    const buttton = screen.getByRole("button");
-    fireEvent.click(buttton);
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
     expect(mockOnNew).toHaveBeenCalledWith(mockChangedValue);
   });
   it("renders with all values", () => {
     const mockOnChange = jest.fn();
     const mockOnNew = jest.fn();
+    const mockOnDelete = jest.fn();
     const allProps: Required<Props> = {
       label: mockLabel,
       value: mockValue,
       onNew: mockOnNew,
       onChange: mockOnChange,
+      removable: false,
+      onDelete: mockOnDelete,
     };
     const { input } = getSystemUnderTest(allProps);
     expect(input.value).toBe(mockValue);
@@ -60,9 +63,26 @@ describe("<InputItem />", () => {
     expect(input.value).toBe(mockChangedValue);
     expect(mockOnChange).toHaveBeenCalledWith(mockChangedValue);
 
-    const buttton = screen.getByRole("button");
-    fireEvent.click(buttton);
+    const button = screen.getByRole("button", { name: /add new/i });
+    fireEvent.click(button);
     expect(mockOnNew).toHaveBeenCalledWith(mockChangedValue);
+  });
+  describe("Removable", () => {
+    it("Renders on removable mode", () => {
+      getSystemUnderTest({ removable: true });
+      const { input } = getSystemUnderTest({ value: mockValue });
+      expect(input.value).toBe(mockValue);
+      screen.getByRole("button", { name: /delete/i });
+    });
+    it("Calls onDelete", () => {
+      const mockOnDelete = jest.fn();
+      getSystemUnderTest({ removable: true, onDelete: mockOnDelete });
+      const { input } = getSystemUnderTest({ value: mockValue });
+      expect(input.value).toBe(mockValue);
+      const button = screen.getByRole("button", { name: /delete/i });
+      fireEvent.click(button);
+      expect(mockOnDelete).toHaveBeenCalled();
+    });
   });
 });
 const defaultProps: Partial<Props> = {};
