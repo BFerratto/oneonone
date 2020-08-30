@@ -1,7 +1,10 @@
 import React from "react";
 import { screen, fireEvent } from "@testing-library/react";
-import { Props } from "./InputItem";
-import { renderWithTheme } from "../../../../../__tests__/utils";
+import { Props } from ".";
+import {
+  renderWithTheme,
+  rerenderWithTheme,
+} from "../../../../../../__tests__/utils";
 
 describe("<InputItem />", () => {
   it("renders", () => {
@@ -54,11 +57,11 @@ describe("<InputItem />", () => {
       onChange: mockOnChange,
       removable: false,
       onDelete: mockOnDelete,
+      id: mockid,
     };
     const { input } = getSystemUnderTest(allProps);
     expect(input.value).toBe(mockValue);
 
-    const mockChangedValue = "mockChangedValue";
     fireEvent.change(input, { target: { value: mockChangedValue } });
     expect(input.value).toBe(mockChangedValue);
     expect(mockOnChange).toHaveBeenCalledWith(mockChangedValue);
@@ -66,6 +69,15 @@ describe("<InputItem />", () => {
     const button = screen.getByRole("button", { name: /add new/i });
     fireEvent.click(button);
     expect(mockOnNew).toHaveBeenCalledWith(mockChangedValue);
+  });
+  it("Rerenders if value change", () => {
+    const { input, rerender, InputItem, container } = getSystemUnderTest({
+      value: mockValue,
+    });
+    expect(input.value).toBe(mockValue);
+    rerenderWithTheme(rerender, <InputItem value={mockChangedValue} />);
+    const rerenderedInput = container.querySelector("input");
+    expect(rerenderedInput.value).toBe(mockChangedValue);
   });
   describe("Removable", () => {
     it("Renders on removable mode", () => {
@@ -88,12 +100,14 @@ describe("<InputItem />", () => {
 const defaultProps: Partial<Props> = {};
 const mockLabel = "mockLabel";
 const mockValue = "mockValue";
+const mockid = "mockId";
+const mockChangedValue = "mockChangedValue";
 
 function getSystemUnderTest(props: Partial<Props> = {}) {
   const allProps: Props = { ...defaultProps, ...props } as Props;
-  const { InputItem } = require("./InputItem");
+  const { InputItem } = require("./");
   const result = renderWithTheme(<InputItem {...allProps} />);
   // Since we will always have an input we get here as a convenience and returns
   const input = result.container.querySelector("input");
-  return { ...result, input };
+  return { ...result, input, InputItem };
 }
